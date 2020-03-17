@@ -193,6 +193,8 @@ scale_x_custom_ticks <-
 
 config <-
   function() {
+    # This function acts as a config with "constants" to be used in data prep and plotting
+    
     return(
       list(
         year_to_plot = 2017, ## 2014 - 2017, eg
@@ -211,7 +213,13 @@ prep_data <-
   function(HYS,
            chr_only,
            vwc45) {
-    # HYS: boolean, whether the site is HYS (HYS will have larger axis limits and more ticks)
+    # This function cleans the soil VWC and precipitation event data and prepares
+    # it for plotting
+    # 
+    # HYS: boolean, T = site is HYS (HYS will have larger axis limits and more ticks)
+    # chr_only: boolean, T = only take the chronic treatment. Otherwise averages
+    # chronic and intense treatments as "drought"
+    # vwc45: boolean, T = takes the field "vwc45". Otherwise takes "vwc90"
     
     # Gather data file names
     if (!(HYS)) {
@@ -227,9 +235,11 @@ prep_data <-
     vwc <-
       read.csv(infile_vwc, sep = ",", header = T)
     
+    # Convert vwc timestamp to date format
     vwc$TIMESTAMP <-
       as.Date(vwc$TIMESTAMP, format = "%m/%d/%Y")
     
+    # Recode treatments as "DRT" and drop "INT" treatment if specified by chr_only
     if (chr_only) {
       vwc <-
         vwc %>%
@@ -240,37 +250,42 @@ prep_data <-
         recode(vwc$Treatment, "CHR" = "DRT", "INT" = "DRT")
     }
     
+    # Select year to plot
     year_to_plot <- config()[[1]]
     
+    # Take only the field of data specified by vwc45 argument
     if (vwc45) {
       vwc_plot <-
         vwc %>%
-        dplyr::filter(lubridate::year(TIMESTAMP) == year_to_plot) %>%
-        dplyr::group_by(TIMESTAMP, Treatment) %>%
-        dplyr::summarise(VWC = mean(VWC45, na.rm = T)) %>%
-        dplyr::filter(lubridate::month(TIMESTAMP) >= 4) %>%
-        dplyr::filter(lubridate::month(TIMESTAMP) <= 9)
+        dplyr::filter(lubridate::year(TIMESTAMP) == year_to_plot) %>% # Keep only this year
+        dplyr::group_by(TIMESTAMP, Treatment) %>% # Group by date (day) and treatment
+        dplyr::summarise(VWC = mean(VWC45, na.rm = T)) %>% # Take the average VWC across the day
+        dplyr::filter(lubridate::month(TIMESTAMP) > "2017-04-01") %>%  # Only want dates after April 1
+        dplyr::filter(lubridate::month(TIMESTAMP) < "2017-09-15") # Only want dates before Sept 15
     } else {
       vwc_plot <-
         vwc %>%
-        dplyr::filter(lubridate::year(TIMESTAMP) == year_to_plot) %>%
-        dplyr::group_by(TIMESTAMP, Treatment) %>%
-        dplyr::summarise(VWC = mean(VWC90, na.rm = T)) %>%
-        dplyr::filter(lubridate::date(TIMESTAMP) > "2017-04-01") %>%
-        dplyr::filter(lubridate::date(TIMESTAMP) < "2017-09-15")
+        dplyr::filter(lubridate::year(TIMESTAMP) == year_to_plot) %>% # Keep only this year
+        dplyr::group_by(TIMESTAMP, Treatment) %>% # Group by date (day) and treatment
+        dplyr::summarise(VWC = mean(VWC90, na.rm = T)) %>% # Take the average VWC across the day
+        dplyr::filter(lubridate::date(TIMESTAMP) > "2017-04-01") %>% # Only want dates after April 1
+        dplyr::filter(lubridate::date(TIMESTAMP) < "2017-09-15") # Only want dates before Sept 15
     }
     
+    # Read in precipitation data
     ppt <-
       readxl::read_excel(infile_ppt, sheet = sheet_name)
     
+    # Convert date to correct format
     ppt$date <-
       as.Date(ppt$date, format = "%m/%d/%Y")
     
     ppt <-
       ppt %>%
-      dplyr::filter(date > "2017-04-01") %>%
-      dplyr::filter(date < "2017-09-15")
+      dplyr::filter(date > "2017-04-01") %>% # Only want dates after April 1
+      dplyr::filter(date < "2017-09-15") # Only want dates before Sept 15
     
+    # Return list of data frames
     return(list(vwc_plot, ppt))
   }
 
