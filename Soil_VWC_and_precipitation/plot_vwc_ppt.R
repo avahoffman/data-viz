@@ -20,15 +20,19 @@ theme_sigmaplot <-
     # This function adds Sigma-plot like theme elements to a ggplot object.
     # Use as an additional arg, eg:
     # ggplot() + theme_sigmaplot()
+    # 
+    # ticklen: how long ticks (interior) will be
     
     sigmaplot <-
       theme(
-        panel.background = element_blank(),
-        panel.border = element_rect(size = 1, fill = NA),
-        legend.key = element_rect(fill = NA),
-        axis.ticks.length.y = unit(ticklen, "cm"),
-        axis.ticks.length.y.right = unit(ticklen, "cm"),
-        axis.ticks.length.x = unit(ticklen, "cm"),
+        panel.background = element_blank(), # Clear background
+        panel.border = element_rect(size = 1, fill = NA), # Full border around plot
+        legend.key = element_rect(fill = NA), # Each legend item (e.g., lines) doesn't 
+        # have a background
+        axis.ticks.length.y = unit(ticklen, "cm"), # Tick size
+        axis.ticks.length.y.right = unit(ticklen, "cm"), # Tick size
+        axis.ticks.length.x = unit(ticklen, "cm"), # Tick size
+        # X tick labels are given some padding
         axis.text.x = element_text(
           color = "black",
           margin = margin(
@@ -39,6 +43,7 @@ theme_sigmaplot <-
             unit = "pt"
           )
         ),
+        # Y label (right side) is given some padding
         axis.title.y.right = element_text(
           color = "black",
           margin = margin(
@@ -49,6 +54,7 @@ theme_sigmaplot <-
             unit = "pt"
           )
         ),
+        # Y label (left side) is given some padding
         axis.title.y.left = element_text(
           color = "black",
           margin = margin(
@@ -59,6 +65,7 @@ theme_sigmaplot <-
             unit = "pt"
           )
         ),
+        # Y tick labels (left) are given some padding
         axis.text.y.left = element_text(
           hjust = 1,
           color = "black",
@@ -70,6 +77,7 @@ theme_sigmaplot <-
             unit = "pt"
           )
         ),
+        # Y tick labels (right) are given some padding
         axis.text.y.right = element_text(
           hjust = 0,
           color = "black",
