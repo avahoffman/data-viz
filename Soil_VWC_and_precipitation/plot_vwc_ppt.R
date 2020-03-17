@@ -97,62 +97,71 @@ theme_sigmaplot <-
 scale_y_custom_ticks <-
   function(scale_factor,
            HYS = F) {
+    # This function adds a custom y scale element to a ggplot object.
+    # Use as an additional arg, eg:
+    # ggplot() + scale_y_custom_ticks()
+    # 
+    # scale_factor: Factor by which second y axis will differ (eg., different scales)
+    # HYS: boolean, whether the site is HYS (HYS will have larger axis limits and more ticks)
+    
     if (!(HYS)) {
+      # If site is CHY
       obj <-
         scale_y_continuous(
-          name = "VWC %",
-          limits = c(0, 0.3),
+          name = "VWC %", # Title of left axis
+          limits = c(0, 0.3), # Limits of both axes (based off left side)
           breaks = c(0,
                      0.1,
                      0.2,
-                     0.3),
-          expand = c(0, 0),
+                     0.3), # Left breaks
+          expand = c(0, 0), # Removes padding around axes
           labels = c(0,
                      0.1,
                      0.2,
-                     0.3),
+                     0.3), # Left break labels
           sec.axis = sec_axis(
-            ~ . * scale_factor,
-            name = "Ambient precipitation (mm)",
+            ~ . * scale_factor, # Apply scaling factor to second axis
+            name = "Ambient precipitation (mm)", # Title of right axis
             breaks = c(0,
                        30,
                        60,
-                       90),
+                       90), # Right breaks
             labels = c(0,
                        30,
                        60,
-                       90),
+                       90), # Right break labels
           )
         )
     } else {
+      # If site is HYS
       obj <-
         scale_y_continuous(
-          name = "VWC %",
-          limits = c(0, 0.45),
+          name = "VWC %", # Title of left axis
+          limits = c(0, 0.45), # Limits of both axes (based off left side)
           breaks = c(0,
                      0.1,
                      0.2,
                      0.3,
-                     0.4),
-          expand = c(0, 0),
+                     0.4), # Left breaks
+          expand = c(0, 0), # Removes padding around axes
           labels = c(0,
                      0.1,
                      0.2,
                      0.3,
-                     0.4),
+                     0.4), # Left break labels
           sec.axis = sec_axis(
-            ~ . * scale_factor,
-            name = "Ambient precipitation (mm)",
+            ~ . * scale_factor, # Apply scaling factor to second axis
+            name = "Ambient precipitation (mm)", # Title of right axis
             breaks = c(0,
                        30,
                        60,
                        90,
-                       120),
+                       120), # Right breaks
             labels = c(0,
                        30,
                        60,
                        90,
-                       120),
+                       120), # Right break labels
           )
         )
     }
@@ -198,6 +207,8 @@ prep_data <-
   function(HYS,
            chr_only,
            vwc45) {
+    # HYS: boolean, whether the site is HYS (HYS will have larger axis limits and more ticks)
+    
     # Gather data file names
     if (!(HYS)) {
       infile_vwc <- infile_vwc_chy
