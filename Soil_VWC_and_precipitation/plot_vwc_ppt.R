@@ -172,13 +172,17 @@ scale_y_custom_ticks <-
 
 scale_x_custom_ticks <-
   function() {
+    # This function adds a custom x scale element to a ggplot object.
+    # Use as an additional arg, eg:
+    # ggplot() + scale_x_custom_ticks()
+
     obj <-
       scale_x_date(
-        limits = as.Date(c('2017-04-01', '2017-09-15')),
-        expand = c(0, 0),
-        date_breaks = "month",
-        date_labels = "%b",
-        name = ""
+        limits = as.Date(c('2017-04-01', '2017-09-15')), # Axis limits as dates
+        expand = c(0, 0), # Remove padding around axes
+        date_breaks = "month", # Label each month
+        date_labels = "%b", # Use the Julian month
+        name = "" # No title needed on the x axis
       )
     
     return(obj)
