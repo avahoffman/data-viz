@@ -36,7 +36,7 @@ theme_sigmaplot <-
         # Tick size
         axis.ticks.length.y.right = unit(ticklen, "cm"),
         # Tick size
-        axis.ticks.length.x = unit(ticklen, "cm"),
+        axis.ticks.x = element_blank(),
         # Tick size
         # X tick labels are given some padding
         axis.text.x = element_text(
@@ -94,7 +94,8 @@ theme_sigmaplot <-
             l = 10,
             unit = "pt"
           )
-        )
+        ),
+        # Remove x 
       )
     return(sigmaplot)
   }
