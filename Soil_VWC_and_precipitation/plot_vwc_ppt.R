@@ -102,6 +102,7 @@ theme_sigmaplot <-
 
 scale_y_custom_ticks <-
   function(scale_factor,
+           left_y_title,
            HYS = F) {
     # This function adds a custom y scale element to a ggplot object.
     # Use as an additional arg, eg:
@@ -114,9 +115,9 @@ scale_y_custom_ticks <-
       # If site is CHY
       obj <-
         scale_y_continuous(
-          name = "VWC %",
+          name = left_y_title,
           # Title of left axis
-          limits = c(0, 0.3),
+          limits = c(0, 0.325),
           # Limits of both axes (based off left side)
           breaks = c(0,
                      0.1,
@@ -137,13 +138,11 @@ scale_y_custom_ticks <-
             # Title of right axis
             breaks = c(0,
                        30,
-                       60,
-                       90),
+                       60),
             # Right breaks
             labels = c(0,
                        30,
-                       60,
-                       90),
+                       60),
             # Right break labels
           )
         )
@@ -151,23 +150,21 @@ scale_y_custom_ticks <-
       # If site is HYS
       obj <-
         scale_y_continuous(
-          name = "VWC %",
+          name = left_y_title,
           # Title of left axis
-          limits = c(0, 0.45),
+          limits = c(0, 0.325),
           # Limits of both axes (based off left side)
           breaks = c(0,
                      0.1,
                      0.2,
-                     0.3,
-                     0.4),
+                     0.3),
           # Left breaks
           expand = c(0, 0),
           # Removes padding around axes
           labels = c(0,
                      0.1,
                      0.2,
-                     0.3,
-                     0.4),
+                     0.3),
           # Left break labels
           sec.axis = sec_axis(
             ~ . * scale_factor,
@@ -176,15 +173,11 @@ scale_y_custom_ticks <-
             # Title of right axis
             breaks = c(0,
                        30,
-                       60,
-                       90,
-                       120),
+                       60),
             # Right breaks
             labels = c(0,
                        30,
-                       60,
-                       90,
-                       120),
+                       60),
             # Right break labels
           )
         )
@@ -289,8 +282,8 @@ prep_data <-
         dplyr::filter(lubridate::year(TIMESTAMP) == year_to_plot) %>% # Keep only this year
         dplyr::group_by(TIMESTAMP, Treatment) %>% # Group by date (day) and treatment
         dplyr::summarise(VWC = mean(VWC45, na.rm = T)) %>% # Take the average VWC across the day
-        dplyr::filter(lubridate::month(TIMESTAMP) > "2017-04-01") %>%  # Only want dates after April 1
-        dplyr::filter(lubridate::month(TIMESTAMP) < "2017-09-15") # Only want dates before Sept 15
+        dplyr::filter(lubridate::date(TIMESTAMP) > "2017-04-01") %>%  # Only want dates after April 1
+        dplyr::filter(lubridate::date(TIMESTAMP) < "2017-09-15") # Only want dates before Sept 15
     } else {
       vwc_plot <-
         vwc %>%
@@ -327,6 +320,7 @@ make_vwc_ppt_plot <- function(# Data items
   # Plot items
   legend_title,
   leg_position = c(0.75, 0.8),
+  left_y_title,
   save_file = save_file) {
   # This function plots the data
   #
@@ -373,6 +367,7 @@ make_vwc_ppt_plot <- function(# Data items
                 color = Treatment # Different colors per treatment
               )) +
     scale_y_custom_ticks(scale_factor,
+                         left_y_title,
                          HYS = HYS) + # Add custom ticks for y axes depending on site
     scale_x_custom_ticks() + # Customize x ticks
     scale_color_manual(
