@@ -117,7 +117,7 @@ scale_y_custom_ticks <-
         scale_y_continuous(
           name = left_y_title,
           # Title of left axis
-          limits = c(0, 0.325),
+          limits = c(0, 0.36),
           # Limits of both axes (based off left side)
           breaks = c(0,
                      0.1,
@@ -152,7 +152,7 @@ scale_y_custom_ticks <-
         scale_y_continuous(
           name = left_y_title,
           # Title of left axis
-          limits = c(0, 0.325),
+          limits = c(0, 0.36),
           # Limits of both axes (based off left side)
           breaks = c(0,
                      0.1,
@@ -319,7 +319,7 @@ make_vwc_ppt_plot <- function(# Data items
   chr_only = chr_only,
   # Plot items
   legend_title,
-  leg_position = c(0.75, 0.8),
+  leg_position = c(0.99, 0.99), # Aligns to top right
   left_y_title,
   save_file = save_file) {
   # This function plots the data
@@ -381,9 +381,10 @@ make_vwc_ppt_plot <- function(# Data items
     theme(
       # Additional themeing for formatting legend
       legend.position = leg_position,
-      legend.title.align = 0.5,
-      # Center justify text of the legend title
-      legend.box.background = element_rect(size = 1, fill = NA) # Box around the legend
+      legend.title.align = 0.5, # Center justify text of the legend title
+      legend.justification = c("right", "top"), # Align legend by top right corner
+      legend.box.background = element_blank(), # Box around the legend
+      legend.background = element_blank()
     )
   
   # Color the ticks specifically so that the top and bottom are not overlapping with the
@@ -393,8 +394,7 @@ make_vwc_ppt_plot <- function(# Data items
       gg +
       theme(axis.ticks.y = element_line(color = c(
         "transparent",
-        rep("black", 2),
-        "transparent"
+        rep("black", 3)
       )))
   } else {
     gg <-
